@@ -1,0 +1,7 @@
+numpy
+packaging
+pip
+pygame
+scipy
+screeninfo
+setuptools
