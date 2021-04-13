@@ -1,7 +1,8 @@
 import pygame
 from packaging.version import Version
 
-from bafd import sprites, map, utils
+from bafd import sprites, utils
+from bafd.scenes import map
 
 # Mark version number
 __version__ = Version("0.0.0")

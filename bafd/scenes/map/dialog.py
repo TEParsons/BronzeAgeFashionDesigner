@@ -1,6 +1,6 @@
 import pygame
-from ..sprites import map as sprites
-from ..utils.window import vsize
+from bafd.sprites import map as sprites
+from bafd.utils.window import vsize
 from .tiles import Tile
 
 class TileDlg:

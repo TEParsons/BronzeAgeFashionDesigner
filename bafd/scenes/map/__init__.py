@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy
 import pygame
 
-from ..sprites import map as sprites
+from bafd.sprites import map as sprites
 from .coords import Coord
 from .tiles import Tile
 from . import dialog, land, appeal, influence

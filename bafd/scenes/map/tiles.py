@@ -1,6 +1,6 @@
 import pygame
 from .influence import influence
-from ..sprites import map as sprites
+from bafd.sprites import map as sprites
 from .coords import Coord
 
 class Tile:

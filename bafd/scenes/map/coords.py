@@ -1,5 +1,5 @@
 from math import floor
-from ..utils.window import vsize
+from bafd.utils.window import vsize
 
 def validate_coord(value):
     # Enforce list/tuple
