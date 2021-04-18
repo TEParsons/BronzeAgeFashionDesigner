@@ -10,8 +10,10 @@ from . import dialog, land, appeal, influence
 __folder__ = Path(__file__).parent
 
 
-class Map:
-    def __init__(self, win):
+class Map(pygame.Surface):
+    def __init__(self, size):
+        pygame.Surface.__init__(self, size)
+
         self.tiles = numpy.ndarray(shape=land.landmap.shape, dtype=numpy.object_)
         # Placeholder coord object
         point = Coord((0, 0), mode="map")
@@ -22,11 +24,11 @@ class Map:
                 if val == 1:
                     # If tile is land, style it according to influence maps
                     self.tiles[x, y] = Tile((x, y))
-                    win.blit(self.tiles[x, y].surface, point.screen)
+                    self.blit(self.tiles[x, y].surface, point.screen)
                 elif val == 0:
                     # If tile is water, just draw it
                     self.tiles[x, y] = sprites.water
-                    win.blit(self.tiles[x, y], point.screen)
+                    self.blit(self.tiles[x, y], point.screen)
         self.update_overlay()
 
     def update_overlay(self):
