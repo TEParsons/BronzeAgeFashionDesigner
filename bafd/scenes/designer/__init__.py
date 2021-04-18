@@ -41,19 +41,20 @@ class DyePanel(pygame.Surface, ContainerMixin):
         self.pos = pos
         self.size = size
 
-        self.red = DyeButton(sprites.dyes.red, (10, 10))
-        self.orange = DyeButton(sprites.dyes.orange, (10, 30))
-        self.yellow = DyeButton(sprites.dyes.yellow, (10, 50))
-        self.green = DyeButton(sprites.dyes.green, (10, 70))
-        self.indigo = DyeButton(sprites.dyes.indigo, (10, 90))
-        self.purple = DyeButton(sprites.dyes.purple, (10, 110))
-        self.brown = DyeButton(sprites.dyes.brown, (10, 130))
+        self.buttons = {
+            "red": DyeButton(sprites.dyes.red, (0, 00)),
+            "orange": DyeButton(sprites.dyes.orange, (0, 20)),
+            "yellow": DyeButton(sprites.dyes.yellow, (0, 40)),
+            "green": DyeButton(sprites.dyes.green, (0, 60)),
+            "indigo": DyeButton(sprites.dyes.indigo, (0, 80)),
+            "purple": DyeButton(sprites.dyes.purple, (0, 100)),
+            "brown": DyeButton(sprites.dyes.brown, (0, 120)),
+        }
 
-        self.buttons = [self.red, self.orange, self.yellow, self.green, self.indigo, self.purple, self.brown]
-        for button in self.buttons:
-            self.surface.blit(button.surface, button.pos)
+        for button in self.buttons.values():
+            self.blit(button, button.pos)
 
     def on_click(self, pos):
-        for button in self.buttons:
+        for button in self.buttons.values():
             if pos in button:
                 button.on_click(pos)
