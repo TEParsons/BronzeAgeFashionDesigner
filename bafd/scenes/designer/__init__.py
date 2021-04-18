@@ -8,12 +8,22 @@ class Designer(pygame.Surface):
     def __init__(self, size):
         pygame.Surface.__init__(self, size)
 
-        self.dyes = DyePanel((2, 2), (50, 150))
-        self.blit(self.dyes.surface, self.dyes.pos)
+        self.dyes = DyePanel((5, 5), (50, 150))
+        self.blit(self.dyes, self.dyes.pos)
+
+        self.mannequin = Mannequin((90, 5))
+        self.blit(self.mannequin, self.mannequin.pos)
 
     def on_click(self, pos):
         if pos in self.dyes:
             self.dyes.on_click(pos)
+
+
+class Mannequin(pygame.Surface, ContainerMixin):
+    def __init__(self, pos):
+        pygame.Surface.__init__(self, sprites.clothes.mannequin.get_size())
+        self.pos = pos
+        self.blit(sprites.clothes.mannequin, (0, 0))
 
 
 class DyeButton(Button):
