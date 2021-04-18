@@ -5,7 +5,7 @@ red = BaseColor("#B5181E")
 orange = BaseColor("#ED6D18")
 yellow = BaseColor("#F4AB2A")
 green = BaseColor("#205929")
-blue = BaseColor("#2A3771")
+indigo = BaseColor("#2A3771")
 purple = BaseColor("#5C3777")
 brown = BaseColor("#8C3F20")
 white = BaseColor("#DADCE0")
@@ -17,7 +17,7 @@ url = f"https://coolors.co/" \
       f"{orange.get_hex_l()}-" \
       f"{yellow.get_hex_l()}-" \
       f"{green.get_hex_l()}-" \
-      f"{blue.get_hex_l()}-" \
+      f"{indigo.get_hex_l()}-" \
       f"{purple.get_hex_l()}-" \
       f"{brown.get_hex_l()}-" \
       f"{white.get_hex_l()}-" \
@@ -25,7 +25,7 @@ url = f"https://coolors.co/" \
       f"{black.get_hex_l()}".replace("#", "")
 # Colours for each culture
 cultures = {
-    'celtic': blue,
+    'celtic': indigo,
     'thracean': green,
     'italic': purple,
     'greek': purple+2,
