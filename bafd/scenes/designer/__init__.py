@@ -1,6 +1,6 @@
 import pygame
 from ... import sprites
-from ...utils.ui import Button, Container
+from ...utils.ui import Button, ContainerMixin
 from ...utils.colours import palette
 
 
@@ -29,17 +29,17 @@ class DyeButton(Button):
 
     @property
     def dye(self):
-        return self.dyes[self.surface]
+        return self.dyes[self.image]
 
     def on_click(self, pos):
         print(self.dye.get_rgb())
 
 
-class DyePanel(Container):
+class DyePanel(pygame.Surface, ContainerMixin):
     def __init__(self, pos, size):
-        Container.__init__(self, pos, size)
-        self.surface = pygame.Surface(size)
-        self.surface.fill(palette.white.get_rgb())
+        pygame.Surface.__init__(self, size)
+        self.pos = pos
+        self.size = size
 
         self.red = DyeButton(sprites.dyes.red, (10, 10))
         self.orange = DyeButton(sprites.dyes.orange, (10, 30))

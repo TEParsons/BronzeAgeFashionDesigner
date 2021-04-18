@@ -1,7 +1,7 @@
 import pygame
 
 
-class Container:
+class ContainerMixin:
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
@@ -20,10 +20,22 @@ class Container:
         return horiz and vert
 
 
-class Button(Container):
-    def __init__(self, surface, pos):
-        Container.__init__(self, pos, surface.get_size())
-        self.surface = surface
+class Button(pygame.Surface, ContainerMixin):
+    def __init__(self, image, pos):
+        pygame.Surface.__init__(self, image.get_size())
+        self.pos = pos
+        self.size = image.get_size()
+        self.image = image
+
+    @property
+    def image(self):
+        return self._image
+
+    @image.setter
+    def image(self, value):
+        assert isinstance(value, pygame.Surface)
+        self._image = value
+        self.blit(value, (0, 0))
 
     def on_click(self, *args, **kwargs):
         return
