@@ -22,6 +22,9 @@ class Coord:
         # Supply value to setter methods
         setattr(self, mode, coord)
 
+    def __repr__(self):
+        return f"<Coord object: map={self.map} screen={self.screen}>"
+
     @property
     def map(self):
         """Location of this coordinate on the map"""
