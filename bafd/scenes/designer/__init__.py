@@ -1,12 +1,13 @@
 import pygame
 from ... import sprites
 from ...utils.ui import Button, ContainerMixin
-from ...utils.colours import palette
+from ...utils.colours import palette, empty
 
 
 class Designer(pygame.Surface):
     def __init__(self, size):
         pygame.Surface.__init__(self, size)
+        self.fill(pygame.Color(0, 255, 255))
 
         self.dyes = DyePanel((5, 5), (50, 150))
         self.blit(self.dyes, self.dyes.pos)
@@ -21,8 +22,12 @@ class Designer(pygame.Surface):
 
 class Mannequin(pygame.Surface, ContainerMixin):
     def __init__(self, pos):
-        pygame.Surface.__init__(self, sprites.clothes.mannequin.get_size())
+        pygame.Surface.__init__(self, sprites.clothes.mannequin.get_size(), flags=pygame.SRCALPHA)
         self.pos = pos
+        self.clear()
+
+    def clear(self):
+        self.fill(empty)
         self.blit(sprites.clothes.mannequin, (0, 0))
 
 

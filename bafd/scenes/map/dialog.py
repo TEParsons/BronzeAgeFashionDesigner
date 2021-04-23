@@ -6,12 +6,10 @@ from .tiles import Tile
 class TileDlg:
     def __init__(self, win, tile=None):
 
-        self.surface = pygame.Surface((20, 30))
+        self.surface = pygame.Surface((200, 300))
         self.tile = tile
         self.win = win
         self.populate()
-
-
 
     def populate(self):
         if self.tile is None:
@@ -27,3 +25,4 @@ class TileDlg:
         self.surface.fill((255, 255, 255))
 
         self.win.blit(self.surface, (0,0))#(vsize[0] * 0.65, vsize[1] * 0.05))
+
