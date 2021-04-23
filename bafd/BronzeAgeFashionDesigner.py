@@ -1,6 +1,6 @@
 import pygame
 
-from bafd import sprites, utils, scenes
+from bafd import sprites, utils, scenes, time
 
 # Setup basic requirements
 pygame.init()
@@ -18,16 +18,25 @@ main_map = scenes.map.Map(utils.window.vsize)
 # Create designer view
 designer_view = scenes.designer.Designer(utils.window.vsize)
 
-vwin.scene = designer_view
+vwin.scene = main_map
 
+year = time.Year(-1500, length=1)
+t = 0
 done = False
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
+            # Get key response
             done = event.key == pygame.K_ESCAPE
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Get mouse response
             if hasattr(vwin.scene, "on_click"):
                 pos = utils.window.Position(*pygame.mouse.get_pos())
                 vwin.scene.on_click(pos)
+    # Update time
     clock.tick(60)
+    t += clock.get_time() / 1000
+    # Update year
+    year.check()
+    # Flip screen
     pygame.display.flip()
