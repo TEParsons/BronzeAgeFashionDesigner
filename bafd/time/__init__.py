@@ -14,7 +14,7 @@ class Year:
         self.time += self.clock.get_time()
         if self.time/1000 > self.length:
             self.time = 0
-            self.value += 1
+            self += 1
 
     def __str__(self):
         christ = "AD" if self.value >= 0 else "BC"
@@ -35,3 +35,7 @@ class Year:
     def __isub__(self, other):
         self += -other
         return self
+
+    def __eq__(self, other):
+        assert isinstance(other, (int, float, Year))
+        return self.value == int(other)
