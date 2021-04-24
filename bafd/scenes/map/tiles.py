@@ -24,8 +24,13 @@ class Tile:
     @property
     def influence(self):
         """Dict of values indicating the level of influence of each culture on this tile (0:1)"""
-        return {culture: infmap[self.coords.map]
-                for culture, infmap in influence.items()}
+        absolute = {culture: infmap['inner'][self.coords.map]
+                    for culture, infmap in influence.items()}
+        summed = sum(absolute.values())
+        minimum = min(absolute.values())
+        relative = {culture: (val - minimum)/(summed - minimum)
+                    for culture, val in absolute.items()}
+        return relative
 
     @influence.setter
     def influence(self, value):
@@ -35,7 +40,7 @@ class Tile:
         assert all(0 <= val <= 255 for val in value.values())
         # Set module-level influence map
         for culture, val in value.items():
-            influence[culture] = val
+            influence[culture]['inner'][self.coords.map] = val
 
     def update_overlay(self):
         # Reset tile

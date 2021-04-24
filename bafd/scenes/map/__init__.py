@@ -5,7 +5,7 @@ import pygame
 from bafd.sprites import map as sprites
 from .coords import Coord
 from .tiles import Tile
-from . import dialog, land, appeal, influence
+from . import dialog, land, influence
 
 __folder__ = Path(__file__).parent
 
@@ -36,4 +36,4 @@ class Map(pygame.Surface):
             for cell in row:
                 if isinstance(cell, Tile):
                     cell.update_overlay()
-        pygame.display.update()
+                    self.blit(cell.surface, cell.coords.screen)

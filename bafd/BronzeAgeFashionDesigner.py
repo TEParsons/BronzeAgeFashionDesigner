@@ -20,7 +20,7 @@ designer_view = scenes.designer.Designer(utils.window.vsize)
 
 vwin.scene = main_map
 
-year = time.Year(-1500, length=1)
+year = time.Year(-1500, length=0.1)
 t = 0
 done = False
 while not done:
@@ -39,4 +39,6 @@ while not done:
     # Update year
     year.check()
     # Flip screen
+    main_map.update_overlay()
+    vwin.blit(vwin.scene, (0, 0))
     pygame.display.flip()

@@ -1,4 +1,5 @@
 from pygame import time
+from bafd.scenes.map.influence import advance_year
 
 class Year:
     def __init__(self, value, length):
@@ -27,9 +28,8 @@ class Year:
         assert isinstance(other, int)
         # Do the actual addition
         self.value += other
-        # Recalculate
-
-
+        # Recalculate influence
+        advance_year()
         return self
 
     def __isub__(self, other):

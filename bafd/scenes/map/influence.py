@@ -27,9 +27,29 @@ def make_influence_map(centroid):
     map = gaussian_filter(map, 5)
     return map
 
+
+def calculate_spread(culture):
+    influence[culture]['outer'] = numpy.digitize(
+        influence[culture]['inner'],
+        [0.2, 0.3, 0.6]
+    ) / 3
+
+
 # Convert centroid values to influence maps
 influence = {}
 for culture in centroids:
-    influence[culture] = make_influence_map(centroids[culture])
 
-print(influence["greek"][centroids["greek"]])
+    influence[culture] = {
+        'inner': make_influence_map(centroids[culture])
+    }
+    calculate_spread(culture)
+
+
+def advance_year():
+    for culture in influence:
+        xPlus = numpy.roll(influence[culture]['outer'], 1, 0)
+        xMinus = numpy.roll(influence[culture]['outer'], -1, 0)
+        yPlus = numpy.roll(influence[culture]['outer'], 1, 1)
+        yMinus = numpy.roll(influence[culture]['outer'], -1, 1)
+        influence[culture]['inner'] = (influence[culture]['inner'] + xPlus + xMinus + yPlus + yMinus) / 5
+        calculate_spread(culture)
