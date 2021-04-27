@@ -58,6 +58,11 @@ class Map(pygame.Surface):
                 # Reblit
                 self.blit(cell.surface, cell.coords.screen)
 
+    def on_click(self, pos):
+        i = Coord(pos, mode="screen").map
+        if hasattr(self.tiles[i], "on_click"):
+            self.tiles[i].on_click(pos)
+
 
 class Tile:
     def __init__(self, coords, resources=[]):
@@ -122,6 +127,9 @@ class Tile:
             self.overlays[culture].set_alpha(self.demographics[culture]*255)
             # Merge
             self.surface.blit(self.overlays[culture], (0, 0), special_flags=pygame.BLEND_ALPHA_SDL2)
+
+    def on_click(self, pos):
+        print(self.coords.map)
 
 
 class Coord:
