@@ -105,7 +105,7 @@ class Tile:
             dtype=self.demographics.dtype
         )
         for culture in spread.cultures:
-            spread.demographics[culture][self.coords.map] += numpy.nanmean(adj[culture])
+            spread.demographics[culture][self.coords.map] += numpy.nanmean(adj[culture]) * numpy.random.choice([0.9, 1, 1.1])
         # Re-normalise demographics
         total = sum(spread.demographics[self.coords.map])
         for culture in spread.cultures:
