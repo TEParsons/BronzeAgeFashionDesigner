@@ -1,6 +1,7 @@
 import pygame
-
+from bafd.scenes.map import spread
 from bafd import sprites, utils, scenes, time
+
 
 # Setup basic requirements
 pygame.init()
@@ -20,7 +21,6 @@ designer_view = scenes.designer.Designer(utils.window.vsize)
 
 vwin.scene = main_map
 
-year = time.Year(-1500, length=0.1)
 t = 0
 done = False
 while not done:
@@ -37,8 +37,7 @@ while not done:
     clock.tick(60)
     t += clock.get_time() / 1000
     # Update year
-    year.check()
+    main_map.year.check()
     # Flip screen
-    main_map.update_overlay()
     vwin.blit(vwin.scene, (0, 0))
     pygame.display.flip()
