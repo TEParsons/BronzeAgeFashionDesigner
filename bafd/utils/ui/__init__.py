@@ -1,5 +1,5 @@
 import pygame
-
+from ...utils.colours import empty
 
 class ContainerMixin:
     def __init__(self, pos, size):
@@ -38,7 +38,7 @@ class ContainerMixin:
 
 class Button(pygame.Surface, ContainerMixin):
     def __init__(self, image, pos):
-        pygame.Surface.__init__(self, image.get_size())
+        pygame.Surface.__init__(self, image.get_size(), flags=pygame.SRCALPHA)
         self.pos = pos
         self.size = image.get_size()
         self.image = image
@@ -50,6 +50,7 @@ class Button(pygame.Surface, ContainerMixin):
     @image.setter
     def image(self, value):
         assert isinstance(value, pygame.Surface)
+        self.fill(empty)
         self._image = value
         self.blit(value, (0, 0))
 
