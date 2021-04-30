@@ -1,8 +1,6 @@
 from pathlib import Path
 from pygame import image
 
-from . import chiton
-
 # Get files
 sprites = {}
 for sprite in Path(__file__).parent.glob("*.png"):

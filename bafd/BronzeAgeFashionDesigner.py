@@ -15,11 +15,11 @@ vwin = utils.window.VirtualWindow(utils.window.vsize)
 pygame.display.set_caption('Bronze Age Fashion Designer')
 pygame.display.set_icon(sprites.logo)
 # Create map view
-main_map = scenes.map.Map(utils.window.vsize)
+map_view = scenes.map.Map(utils.window.vsize)
 # Create designer view
 designer_view = scenes.designer.Designer(utils.window.vsize)
 
-vwin.scene = main_map
+vwin.scene = designer_view
 
 t = 0
 done = False
@@ -37,7 +37,7 @@ while not done:
     clock.tick(60)
     t += clock.get_time() / 1000
     # Update year
-    main_map.year.check()
+    map_view.year.check()
     # Flip screen
     vwin.blit(vwin.scene, (0, 0))
     pygame.display.flip()
