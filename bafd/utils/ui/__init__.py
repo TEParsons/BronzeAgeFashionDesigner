@@ -10,6 +10,22 @@ class ContainerMixin:
     def rect(self):
         return pygame.rect.Rect(*self.pos, *self.size)
 
+    @property
+    def x(self):
+        return self.pos[0]
+
+    @property
+    def y(self):
+        return self.pos[1]
+
+    @property
+    def w(self):
+        return self.size[0]
+
+    @property
+    def h(self):
+        return self.size[1]
+
     def __contains__(self, pos):
         assert isinstance(pos, (list, tuple)) and len(pos) == 2
         x, y = pos
