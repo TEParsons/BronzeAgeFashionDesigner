@@ -13,22 +13,21 @@ grey = BaseColor("#766B6B")
 black = BaseColor("#131416")
 # Coolors link
 url = f"https://coolors.co/" \
-      f"{red.get_hex_l()}-" \
-      f"{orange.get_hex_l()}-" \
-      f"{yellow.get_hex_l()}-" \
-      f"{green.get_hex_l()}-" \
-      f"{indigo.get_hex_l()}-" \
-      f"{purple.get_hex_l()}-" \
-      f"{brown.get_hex_l()}-" \
-      f"{white.get_hex_l()}-" \
-      f"{grey.get_hex_l()}-" \
-      f"{black.get_hex_l()}".replace("#", "")
+      f"{red.hex}-" \
+      f"{orange.hex}-" \
+      f"{yellow.hex}-" \
+      f"{green.hex}-" \
+      f"{indigo.hex}-" \
+      f"{purple.hex}-" \
+      f"{brown.hex}-" \
+      f"{white.hex}-" \
+      f"{grey.hex}-" \
+      f"{black.hex}".replace("#", "")
 # Colours for each culture
 cultures = {
     'celtic': indigo,
     'thracean': green,
-    'italic': purple,
-    'greek': purple+2,
+    'greek': purple,
     'hittite': yellow,
     'iberian': brown+2,
     'berber': brown,

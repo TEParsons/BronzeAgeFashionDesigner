@@ -5,4 +5,3 @@ pygame
 scipy
 screeninfo
 setuptools
-colour

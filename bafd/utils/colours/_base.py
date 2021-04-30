@@ -1,25 +1,41 @@
-from colour import Color
+from pygame import Color
 
 
 class BaseColor(Color):
     """
     Subclass of Color which generates shades and allows these shades to be accessed by +- operators
     """
+    def update(self, *args, **kwargs):
+        Color.update(self, *args, **kwargs)
+        # Clear cache and recalculate shades
+        if hasattr(self, "_shades"):
+            del self._shades
+        self.shades
+
+    @property
+    def hex(self):
+        return f"#{self.r:x}{self.g:x}{self.b:x}"
+
     @property
     def shades(self):
+        # If value already cached, don't bother recalculating
+        if hasattr(self, "_shades"):
+            return self._shades
         # Make range
-        out = []
+        self._shades = []
         for n in range(-8, 8+1):
             # Get base HSL
-            h, s, l = list(self.get_hsl())
+            h, s, l, a = list(self.hsla)
             # Desaturate as n increases
-            s = min(max(s - n/16, 0), 1)
+            s = min(max(s - n/16*100, 0), 100)
             # Lighten as n increases
-            l = min(max(l + n / 16, 0), 1)
+            l = min(max(l + n/16*100, 0), 100)
             # Reassemble hsl and make a new colour
-            out.append(BaseColor(hsl=(h, s, l)))
+            new = BaseColor(0, 0, 0, 0)
+            new.hsla = (h, s, l, a)
+            self._shades.append(new)
         # Return list of colours
-        return out
+        return self._shades
 
     def __add__(self, other):
         # Can only be added to numbers
