@@ -1,13 +1,13 @@
 from pathlib import Path
 from pygame import image
 
-from . import chiton
+from ._base import Garment, DyableSprite
 
-# Get files
-sprites = {}
-for sprite in Path(__file__).parent.glob("*.png"):
-    sprites[sprite.stem] = image.load(str(sprite))
-# Append files to module namespace according to filename
-globals().update(sprites)
-# Update module namespace
-__all__ = ["__folder__"] + list(sprites)
+__folder__ = Path(__file__).parent
+
+# Import basics
+mannequin = image.load(str(__folder__ / "mannequin.png"))
+studio = image.load(str(__folder__ / "studio.png"))
+
+# Import garments
+chiton = Garment(__folder__ / "chiton", ["shoulder", "belt", "length"])

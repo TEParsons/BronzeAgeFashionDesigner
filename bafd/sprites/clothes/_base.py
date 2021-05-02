@@ -1,6 +1,7 @@
 import pygame
 import numpy
 from pathlib import Path
+from collections import OrderedDict
 from bafd.utils.colours import empty, BaseColor
 
 
@@ -55,54 +56,70 @@ class DyableSprite(pygame.Surface):
         self.refresh()
 
 
-class CompoundSprite(pygame.Surface):
-
+class Garment(pygame.Surface):
     def __init__(self, path, axes):
         # Store path
         assert isinstance(path, (Path, str))
         path = Path(path)
         assert path.is_dir()
         self.path = path
+        files = list(path.glob("*[!_].png"))
 
-        # Make key dicts
-        self.axes = axes
-        self.styles = {axis: [] for axis in self.axes}
-        for file in path.glob("*.png"):
-            for i, val in enumerate(file.stem.split("_")):
-                if val not in self.styles[self.axes[i]]:
-                    self.styles[self.axes[i]].append(val)
+        assert len(files) > 0
+
+        # Create dict of {axis: [values]} from axis names and filenames
+        self.axes = OrderedDict(**{axis: [] for axis in axes})
+        for i, axis in enumerate(axes):
+            # For each axis, get all values represented in filenames
+            values = []
+            for file in files:
+                value = file.stem.split("_")[i]
+                if value not in values:
+                    values.append(value)
+            self.axes[axis] = values
+
         # Get files
-        self.surfaces = numpy.empty([len(keys) for keys in self.styles.values()],
-                                    dtype=object)
-        for file in path.glob("*.png"):
-            ii = []
-            for i, val in enumerate(file.stem.split("_")):
-                ii.append(
-                    self.styles[self.axes[i]].index(val)
-                )
-            self.surfaces[tuple(ii)] = pygame.image.load(str(file))
+        self.images = {}
+        for file in files:
+            self.images[file.stem] = DyableSprite(file)
+        starting = list(self.images)[0]
 
         # Initialise object
-        pygame.Surface.__init__(self, (100, 100))
+        pygame.Surface.__init__(self, self.images[starting].get_size(), flags=pygame.SRCALPHA)
 
+        # Set starting current
+        self.current = starting
 
-    def get(self, **kwargs):
-        assert list(self.styles) == list(dict(kwargs))
-        assert all(val in self.styles[key] for key, val in kwargs.items())
-        ii = []
-        for axis, val in kwargs.items():
-            ii.append(
-                self.styles[axis].index(val)
-            )
-        return self.surfaces[tuple(ii)]
 
     @property
     def current(self):
         if hasattr(self, "_current"):
-            return self.get(**self._current)
+            return self._current
 
     @current.setter
     def current(self, value):
-        assert isinstance(value, dict)
+        # If given a dict, convert it to a string key
+        if isinstance(value, dict):
+            assert all(key in value for key in self.axes)
+            styles = [value[key] for key in self.axes]
+            value = "_".join(styles)
+        # Validate
+        assert isinstance(value, str)
+        assert value in self.images
+        # Set current as keyed image
+        self._current = self.images[value]
+        # Clear and reblit
+        self.fill(empty)
+        self.blit(self._current, (0, 0))
 
-        self._current = value
+    def dye(self, color):
+        for sprite in self.images.values():
+            sprite.dye(color)
+        self.fill(empty)
+        self.blit(self.current, (0, 0))
+
+    def __next__(self):
+        styles = list(self.images.values())
+        names = list(self.images)
+        i = styles.index(self.current)
+        self.current = names[i-1]

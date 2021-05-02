@@ -11,7 +11,7 @@ class Designer(pygame.Surface):
 
         # Make mannequin
         self.mannequin = Mannequin(self, (90, 5))
-        self.mannequin.clothing['top'].set(sprites.clothes.chiton.both_high_short)
+        self.mannequin.clothing['top'].set(sprites.clothes.chiton)
         self.mannequin.dress()
 
         # Make dye buttons
