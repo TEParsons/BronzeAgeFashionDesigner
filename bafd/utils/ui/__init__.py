@@ -1,6 +1,7 @@
 import pygame
 from ...utils.colours import empty
 
+
 class ContainerMixin:
     def __init__(self, pos, size):
         self.pos = pos
@@ -36,11 +37,27 @@ class ContainerMixin:
         return horiz and vert
 
 
+class Panel(pygame.Surface, ContainerMixin):
+    def __init__(self, scene, pos, size):
+        ContainerMixin.__init__(self, pos, size)
+        pygame.Surface.__init__(self, self.size, flags=pygame.SRCALPHA)
+        self.fill(empty)
+        self.scene = scene
+        self.children = []
+
+    def on_click(self, pos):
+        # Convert from absolute position to relative
+        pos = (pos[0] - self.pos[0], pos[1] - self.pos[1])
+        # Call on_click method of any children clicked on
+        for child in self.children:
+            if pos in child and hasattr(child, "on_click"):
+                child.on_click(pos)
+
+
 class Button(pygame.Surface, ContainerMixin):
     def __init__(self, image, pos):
-        pygame.Surface.__init__(self, image.get_size(), flags=pygame.SRCALPHA)
-        self.pos = pos
-        self.size = image.get_size()
+        ContainerMixin.__init__(self, pos, image.get_size())
+        pygame.Surface.__init__(self, self.size, flags=pygame.SRCALPHA)
         self.image = image
 
     @property
@@ -54,5 +71,5 @@ class Button(pygame.Surface, ContainerMixin):
         self._image = value
         self.blit(value, (0, 0))
 
-    def on_click(self, *args, **kwargs):
+    def on_click(self, pos):
         return
