@@ -13,7 +13,7 @@ class Designer(pygame.Surface):
         self.mannequin.clothing['top'].set(sprites.clothes.chiton.both_high_short)
         self.mannequin.dress()
 
-        self.dyes = DyePanel(self, (5, 5), (50, 150))
+        self.dyes = DyePanel(self, (5, 5))
         self.blit(self.dyes, self.dyes.pos)
 
     def on_click(self, pos):
@@ -55,11 +55,13 @@ class Mannequin(pygame.Surface, ContainerMixin):
             self.blit(item, item.pos)
         self.parent.blit(self, self.pos)
 
+
 class Clothing(pygame.Surface, ContainerMixin):
     def __init__(self, parent, pos, size):
         ContainerMixin.__init__(self, pos, size)
         pygame.Surface.__init__(self, size, flags=pygame.SRCALPHA)
         self.parent = parent
+        self.sprite = None
         self._dye = None
 
     def clear(self):
@@ -67,15 +69,16 @@ class Clothing(pygame.Surface, ContainerMixin):
 
     def set(self, sprite):
         self.clear()
+        self.sprite = sprite
         self.blit(sprite, (0, 0))
         self.dye(self._dye)
 
     def dye(self, dye):
         assert isinstance(dye, (BaseColor, type(None)))
         self._dye = dye
-        if dye is None:
-            return
-        self.fill(dye)
+        self.sprite.dye(self._dye)
+        self.clear()
+        self.blit(self.sprite, (0, 0))
         self.parent.dress()
 
 
@@ -88,6 +91,7 @@ class DyeButton(Button):
         sprites.dyes.indigo: palette.indigo,
         sprites.dyes.purple: palette.purple,
         sprites.dyes.brown: palette.brown,
+        sprites.dyes.none: None,
     }
 
     def __init__(self, parent, image, pos):
@@ -100,24 +104,26 @@ class DyeButton(Button):
 
     def on_click(self, pos):
         self.parent.parent.mannequin.current.dye(self.dye)
-        print("reached")
 
 
 class DyePanel(pygame.Surface, ContainerMixin):
-    def __init__(self, parent, pos, size):
+    def __init__(self, parent, pos):
+        self.parent = parent
+        # Make buttons
+        self.buttons = {
+            "red": DyeButton(self, sprites.dyes.red, (1, 00)),
+            "orange": DyeButton(self, sprites.dyes.orange, (1, 20)),
+            "yellow": DyeButton(self, sprites.dyes.yellow, (1, 40)),
+            "green": DyeButton(self, sprites.dyes.green, (1, 60)),
+            "indigo": DyeButton(self, sprites.dyes.indigo, (1, 80)),
+            "purple": DyeButton(self, sprites.dyes.purple, (1, 100)),
+            "brown": DyeButton(self, sprites.dyes.brown, (1, 120)),
+            "none": DyeButton(self, sprites.dyes.none, (1, 140)),
+        }
+        # Initialise surface
+        size = (20, 20*len(self.buttons))
         ContainerMixin.__init__(self, pos, size)
         pygame.Surface.__init__(self, size, flags=pygame.SRCALPHA)
-        self.parent = parent
-
-        self.buttons = {
-            "red": DyeButton(self, sprites.dyes.red, (0, 00)),
-            "orange": DyeButton(self, sprites.dyes.orange, (0, 20)),
-            "yellow": DyeButton(self, sprites.dyes.yellow, (0, 40)),
-            "green": DyeButton(self, sprites.dyes.green, (0, 60)),
-            "indigo": DyeButton(self, sprites.dyes.indigo, (0, 80)),
-            "purple": DyeButton(self, sprites.dyes.purple, (0, 100)),
-            "brown": DyeButton(self, sprites.dyes.brown, (0, 120)),
-        }
         self.fill(empty)
         for button in self.buttons.values():
             self.blit(button, button.pos)

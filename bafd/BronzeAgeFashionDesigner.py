@@ -37,7 +37,7 @@ while not done:
     clock.tick(60)
     t += clock.get_time() / 1000
     # Update year
-    map_view.year.check()
+    #map_view.year.check()
     # Flip screen
     vwin.blit(vwin.scene, (0, 0))
     pygame.display.flip()
