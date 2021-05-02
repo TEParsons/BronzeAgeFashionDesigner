@@ -14,7 +14,14 @@ class BaseColor(Color):
 
     @property
     def hex(self):
-        return f"#{self.r:x}{self.g:x}{self.b:x}"
+        return f"#{self.r:02x}{self.g:02x}{self.b:02x}"
+
+    @property
+    def url(self):
+        root = "https://coolors.co/"
+        dark_shades = [shade.hex.strip("#") for shade in self.shades[:8]]
+        light_shades = [shade.hex.strip("#") for shade in self.shades[8:]]
+        return [root + "-".join(dark_shades), root + "-".join(light_shades)]
 
     @property
     def shades(self):
