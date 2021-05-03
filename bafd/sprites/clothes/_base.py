@@ -118,7 +118,7 @@ class Garment(pygame.Surface):
         self.fill(empty)
         self.blit(self.current, (0, 0))
 
-    def __next__(self):
+    def next(self):
         styles = list(self.images.values())
         names = list(self.images)
         i = styles.index(self.current)
