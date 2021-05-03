@@ -16,9 +16,12 @@ class Designer(Scene):
         self.mannequin.clothing = {
             'top': ClothingItem(scene=self, parent=self.mannequin,
                                 sprite=sprites.clothes.chiton,
-                                pos=(0, 60), size=(self.mannequin.w, self.mannequin.h-70))
+                                pos=(0, 60), size=(self.mannequin.w, self.mannequin.h-70)),
+            'hat': ClothingItem(scene=self, parent=self.mannequin,
+                                sprite=sprites.clothes.alopekis,
+                                pos=(0, 0), size=(self.mannequin.w, 80))
         }
-        self.mannequin.current = 'top'
+        self.mannequin.current = 'hat'
 
         # Make dye buttons
         self.children['dyes'] = self.dye_panel = Panel(scene=self, pos=(5, 5), size=(20, 20*8))

@@ -28,3 +28,5 @@ def get_dye_spec(path):
     new_file = path.parent / (path.stem + ".csv")
     numpy.savetxt(new_file, lum_array, fmt="%5i")
 
+get_dye_spec("F:\\GitHub\\BronzeAgeFashionDesigner\\bafd\\sprites\\clothes\\alopekis\\long.png")
+get_dye_spec("F:\\GitHub\\BronzeAgeFashionDesigner\\bafd\\sprites\\clothes\\alopekis\\short.png")

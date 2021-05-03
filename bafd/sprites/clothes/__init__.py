@@ -11,3 +11,4 @@ studio = image.load(str(__folder__ / "studio.png"))
 
 # Import garments
 chiton = Garment(__folder__ / "chiton", ["shoulder", "belt", "length"])
+alopekis = Garment(__folder__ / "alopekis", ["ears"])
