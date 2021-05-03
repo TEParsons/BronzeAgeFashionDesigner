@@ -17,7 +17,7 @@ pygame.display.set_icon(sprites.logo)
 # Create map view
 map_view = scenes.map.Map(utils.window.vsize)
 # Create designer view
-designer_view = scenes.designer.Designer(utils.window.vsize)
+designer_view = scenes.designer.Designer(vwin)
 
 vwin.scene = designer_view
 
@@ -39,5 +39,5 @@ while not done:
     # Update year
     #map_view.year.check()
     # Flip screen
-    vwin.blit(vwin.scene, (0, 0))
+    vwin.scene.update()
     pygame.display.flip()

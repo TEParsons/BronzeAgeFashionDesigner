@@ -82,22 +82,32 @@ class Garment(pygame.Surface):
         self.images = {}
         for file in files:
             self.images[file.stem] = DyableSprite(file)
-        starting = list(self.images)[0]
+        self.styles = list(self.images)
 
         # Initialise object
-        pygame.Surface.__init__(self, self.images[starting].get_size(), flags=pygame.SRCALPHA)
+        pygame.Surface.__init__(self, self.images[self.styles[0]].get_size(), flags=pygame.SRCALPHA)
 
         # Set starting current
-        self.current = starting
+        self.style = self.styles[0]
 
+    def clear(self):
+        self.fill(empty)
+
+    def update(self):
+        self.clear()
+        self.blit(self.image, (0, 0))
 
     @property
-    def current(self):
-        if hasattr(self, "_current"):
-            return self._current
+    def image(self):
+        return self.images[self.style]
 
-    @current.setter
-    def current(self, value):
+    @property
+    def style(self):
+        if hasattr(self, "_style"):
+            return self._style
+
+    @style.setter
+    def style(self, value):
         # If given a dict, convert it to a string key
         if isinstance(value, dict):
             assert all(key in value for key in self.axes)
@@ -106,20 +116,19 @@ class Garment(pygame.Surface):
         # Validate
         assert isinstance(value, str)
         assert value in self.images
-        # Set current as keyed image
-        self._current = self.images[value]
-        # Clear and reblit
-        self.fill(empty)
-        self.blit(self._current, (0, 0))
+        # Set style as keyed image
+        self._style = value
 
+    @property
+    def dye(self):
+        if hasattr(self.image, "_dye"):
+            return self.image._dye
+
+    @dye.setter
     def dye(self, color):
         for sprite in self.images.values():
             sprite.dye(color)
-        self.fill(empty)
-        self.blit(self.current, (0, 0))
 
     def next(self):
-        styles = list(self.images.values())
-        names = list(self.images)
-        i = styles.index(self.current)
-        self.current = names[i-1]
+        i = list(self.images.values()).index(self.image)
+        self.style = self.styles[i-1]

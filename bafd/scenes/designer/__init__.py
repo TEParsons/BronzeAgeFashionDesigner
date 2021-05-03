@@ -1,68 +1,58 @@
 import pygame
 from ... import sprites
+from .._base import Scene
 from ...utils.ui import Button, ContainerMixin, Panel
 from ...utils.colours import BaseColor, palette, empty
 
 
-class Designer(pygame.Surface):
-    def __init__(self, size):
-        pygame.Surface.__init__(self, size)
-        self.blit(sprites.clothes.studio, (0, 0))
+class Designer(Scene):
+    def __init__(self, win):
+        Scene.__init__(self, win)
+        # Set background
+        self.base = sprites.clothes.studio
 
         # Make mannequin
-        self.mannequin = Mannequin(self, (90, 5))
-        self.mannequin.clothing['top'].set(sprites.clothes.chiton)
-        self.mannequin.dress()
+        self.children['mannequin'] = self.mannequin = Mannequin(scene=self, pos=(90, 5))
+        self.mannequin.clothing = {
+            'top': ClothingItem(scene=self, parent=self.mannequin,
+                                sprite=sprites.clothes.chiton,
+                                pos=(0, 60), size=(self.mannequin.w, self.mannequin.h-70))
+        }
+        self.mannequin.current = 'top'
 
         # Make dye buttons
-        dye_buttons = [
-            DyeButton(self.mannequin, sprites.dyes.red, (1, 00)),
-            DyeButton(self.mannequin, sprites.dyes.orange, (1, 20)),
-            DyeButton(self.mannequin, sprites.dyes.yellow, (1, 40)),
-            DyeButton(self.mannequin, sprites.dyes.green, (1, 60)),
-            DyeButton(self.mannequin, sprites.dyes.indigo, (1, 80)),
-            DyeButton(self.mannequin, sprites.dyes.purple, (1, 100)),
-            DyeButton(self.mannequin, sprites.dyes.brown, (1, 120)),
-            DyeButton(self.mannequin, sprites.dyes.none, (1, 140)),
+        self.children['dyes'] = self.dye_panel = Panel(scene=self, pos=(5, 5), size=(20, 20*8))
+        self.dye_panel.children = [
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.red, pos=(1, 00)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.orange, pos=(1, 20)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.yellow, pos=(1, 40)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.green, pos=(1, 60)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.indigo, pos=(1, 80)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.purple, pos=(1, 100)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.brown, pos=(1, 120)),
+            DyeButton(scene=self, parent=self.dye_panel, image=sprites.dyes.none, pos=(1, 140)),
         ]
-        # Make dye panel and add buttons
-        self.dye_panel = Panel(scene=self, pos=(5, 5), size=(20, 20 * len(dye_buttons)))
-        for button in dye_buttons:
-            self.dye_panel.children.append(button)
-            self.dye_panel.blit(button, button.pos)
-        self.blit(self.dye_panel, self.dye_panel.pos)
 
         # Make style ctrls
-        style_buttons = [
+        self.children['style'] = self.style_ctrls = Panel(scene=self, pos=(150, 90), size=(27*2, 27))
+        self.style_ctrls.children = [
             StyleButton(self.mannequin, sprites.ui.left, (1, 1)),
             StyleButton(self.mannequin, sprites.ui.right, (26, 1)),
         ]
-        self.style_ctrls = Panel(scene=self, pos=(150, 90), size=(27 * len(dye_buttons), 27))
-        for button in style_buttons:
-            self.style_ctrls.children.append(button)
-            self.style_ctrls.blit(button, button.pos)
-        self.blit(self.style_ctrls, self.style_ctrls.pos)
-
-    def on_click(self, pos):
-        for panel in [self.dye_panel, self.style_ctrls]:
-            if pos in panel:
-                panel.on_click(pos)
 
 
 class Mannequin(pygame.Surface, ContainerMixin):
-    def __init__(self, parent, pos):
+    def __init__(self, scene, pos):
         ContainerMixin.__init__(self, pos, sprites.clothes.mannequin.get_size())
         pygame.Surface.__init__(self, self.size, flags=pygame.SRCALPHA)
-        self.parent = parent
-        self.clothing = {
-            'top': Clothing(self, pos=(0, 60), size=(self.w, self.h-70))
-        }
-        self._current = 'top'
-        self.dress()
+        self.scene = scene
+        self.clothing = {}
+        self._current = None
 
     @property
     def current(self):
-        return self.clothing[self._current]
+        if self._current in self.clothing:
+            return self.clothing[self._current]
 
     @current.setter
     def current(self, value):
@@ -75,25 +65,35 @@ class Mannequin(pygame.Surface, ContainerMixin):
 
     def clear(self):
         self.fill(empty)
+
+    def reset(self):
+        self.clear()
         self.blit(sprites.clothes.mannequin, (0, 0))
 
-    def dress(self):
-        self.clear()
+    def update(self):
+        self.reset()
         for item in self.clothing.values():
+            item.update()
             self.blit(item, item.pos)
-        self.parent.blit(self, self.pos)
 
 
-class Clothing(pygame.Surface, ContainerMixin):
-    def __init__(self, parent, pos, size):
+class ClothingItem(pygame.Surface, ContainerMixin):
+    def __init__(self, scene, parent, sprite, pos, size):
         ContainerMixin.__init__(self, pos, size)
         pygame.Surface.__init__(self, size, flags=pygame.SRCALPHA)
+        self.scene = scene
         self.parent = parent
-        self.sprite = None
+        self.sprite = sprite
         self._dye = None
+        self._style = self.sprite.styles[0]
 
     def clear(self):
         self.fill(empty)
+
+    def update(self):
+        self.clear()
+        self.sprite.update()
+        self.blit(self.sprite, (0, 0))
 
     def set(self, sprite):
         self.clear()
@@ -104,16 +104,10 @@ class Clothing(pygame.Surface, ContainerMixin):
     def dye(self, dye):
         assert isinstance(dye, (BaseColor, type(None)))
         self._dye = dye
-        self.sprite.dye(self._dye)
-        self.clear()
-        self.blit(self.sprite, (0, 0))
-        self.parent.dress()
+        self.sprite.dye = self._dye
 
     def next(self):
         self.sprite.next()
-        self.clear()
-        self.blit(self.sprite, (0, 0))
-        self.parent.dress()
 
 class DyeButton(Button):
     dyes = {
@@ -127,16 +121,17 @@ class DyeButton(Button):
         sprites.dyes.none: None,
     }
 
-    def __init__(self, mannequin, image, pos):
+    def __init__(self, scene, parent, image, pos):
         Button.__init__(self, image, pos)
-        self.mannequin = mannequin
+        self.scene = scene
+        self.parent = parent
 
     @property
     def dye(self):
         return self.dyes[self.image]
 
     def on_click(self, pos):
-        self.mannequin.current.dye(self.dye)
+        self.scene.mannequin.current.dye(self.dye)
 
 
 class StyleButton(Button):

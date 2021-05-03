@@ -45,6 +45,15 @@ class Panel(pygame.Surface, ContainerMixin):
         self.scene = scene
         self.children = []
 
+    def clear(self):
+        self.fill(empty)
+
+    def update(self):
+        self.clear()
+        for child in self.children:
+            child.update()
+            self.blit(child, child.pos)
+
     def on_click(self, pos):
         # Convert from absolute position to relative
         pos = (pos[0] - self.pos[0], pos[1] - self.pos[1])
@@ -60,6 +69,13 @@ class Button(pygame.Surface, ContainerMixin):
         pygame.Surface.__init__(self, self.size, flags=pygame.SRCALPHA)
         self.image = image
 
+    def clear(self):
+        self.fill(empty)
+
+    def update(self):
+        self.clear()
+        self.blit(self.image, (0, 0))
+
     @property
     def image(self):
         return self._image
@@ -67,9 +83,8 @@ class Button(pygame.Surface, ContainerMixin):
     @image.setter
     def image(self, value):
         assert isinstance(value, pygame.Surface)
-        self.fill(empty)
         self._image = value
-        self.blit(value, (0, 0))
+        self.update()
 
     def on_click(self, pos):
         return
