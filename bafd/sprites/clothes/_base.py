@@ -130,5 +130,16 @@ class Garment(pygame.Surface):
             sprite.dye(color)
 
     def next(self):
+        # Find current index
         i = list(self.images.values()).index(self.image)
+        # If at end of array, go to start
+        if i+1 > len(self.styles)-1:
+            i = -1
+        # Set style to next value
+        self.style = self.styles[i+1]
+
+    def prev(self):
+        # Find current index
+        i = list(self.images.values()).index(self.image)
+        # Set style to previous value
         self.style = self.styles[i-1]

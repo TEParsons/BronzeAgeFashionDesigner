@@ -36,8 +36,8 @@ class Designer(Scene):
         # Make style ctrls
         self.children['style'] = self.style_ctrls = Panel(scene=self, pos=(150, 90), size=(27*2, 27))
         self.style_ctrls.children = [
-            StyleButton(self.mannequin, sprites.ui.left, (1, 1)),
-            StyleButton(self.mannequin, sprites.ui.right, (26, 1)),
+            StyleButton(scene=self, parent=self.style_ctrls, image=sprites.ui.left, pos=(1, 1), func="prev"),
+            StyleButton(scene=self, parent=self.style_ctrls, image=sprites.ui.right, pos=(26, 1), func="next"),
         ]
 
 
@@ -109,6 +109,9 @@ class ClothingItem(pygame.Surface, ContainerMixin):
     def next(self):
         self.sprite.next()
 
+    def prev(self):
+        self.sprite.prev()
+
 class DyeButton(Button):
     dyes = {
         sprites.dyes.red: palette.red,
@@ -135,9 +138,12 @@ class DyeButton(Button):
 
 
 class StyleButton(Button):
-    def __init__(self, mannequin, image, pos):
+    def __init__(self, scene, parent, image, pos, func):
         Button.__init__(self, image, pos)
-        self.mannequin = mannequin
+        self.scene = scene
+        self.parent = parent
+        self.func = func
 
     def on_click(self, pos):
-        self.mannequin.current.next()
+        func = getattr(self.scene.mannequin.current, self.func)
+        func()
