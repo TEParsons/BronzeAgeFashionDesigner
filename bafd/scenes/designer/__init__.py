@@ -1,3 +1,5 @@
+import json
+
 import pygame
 from ... import sprites
 from .._base import Scene
@@ -43,6 +45,18 @@ class Designer(Scene):
             StyleButton(scene=self, parent=self.style_ctrls, image=sprites.ui.right, pos=(26, 1), func="next"),
         ]
 
+    @property
+    def json(self):
+        return {
+            'mannequin': self.mannequin.json
+        }
+
+    @json.setter
+    def json(self, value):
+        assert isinstance(value, dict)
+        # Load to mannequin
+        self.mannequin.json = value['mannequin']
+
 
 class Mannequin(pygame.Surface, ContainerMixin):
     def __init__(self, scene, pos):
@@ -79,6 +93,20 @@ class Mannequin(pygame.Surface, ContainerMixin):
             item.update()
             self.blit(item, item.pos)
 
+    @property
+    def json(self):
+        return {
+            key: value.json
+            for key, value in self.clothing.items()
+        }
+
+    @json.setter
+    def json(self, value):
+        assert isinstance(value, dict)
+        # Load each item
+        for key, value in value.items():
+            self.clothing[key].json = value
+
 
 class ClothingItem(pygame.Surface, ContainerMixin):
     def __init__(self, scene, parent, sprite, pos, size):
@@ -114,6 +142,26 @@ class ClothingItem(pygame.Surface, ContainerMixin):
 
     def prev(self):
         self.sprite.prev()
+
+    @property
+    def json(self):
+        return {
+            'name': self.sprite.path.stem,
+            'dye': self._dye,
+            'style': self.sprite.style
+        }
+
+    @json.setter
+    def json(self, value):
+        assert isinstance(value, dict)
+        # Load base sprite
+        self.sprite = getattr(sprites.clothes, value['name'])
+        # Load dye
+        dye = BaseColor("white")
+        dye.hex = value['dye']
+        self.dye(dye)
+        # Load style
+        self.sprite.style = value['style']
 
 class DyeButton(Button):
     dyes = {

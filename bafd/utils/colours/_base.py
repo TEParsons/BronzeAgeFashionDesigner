@@ -1,4 +1,5 @@
 from pygame import Color
+import re
 
 
 class BaseColor(Color):
@@ -10,11 +11,25 @@ class BaseColor(Color):
         # Clear cache and recalculate shades
         if hasattr(self, "_shades"):
             del self._shades
-        self.shades
 
     @property
     def hex(self):
         return f"#{self.r:02x}{self.g:02x}{self.b:02x}"
+
+    @hex.setter
+    def hex(self, value):
+        value = value or "#ffffff"
+        assert isinstance(value, str)
+        assert re.fullmatch(r"#?[\dAaBbCcDdEeFf]{6}", value)
+        # Strip hashtag
+        value = value.replace("#", "")
+        # Split into three
+        r, g, b = re.findall(r"..", value)
+        # Integerise and set
+        self.r = int(r, 16)
+        self.g = int(g, 16)
+        self.b = int(b, 16)
+        self.a = 255
 
     @property
     def url(self):
@@ -59,3 +74,6 @@ class BaseColor(Color):
         assert isinstance(other, (int, float))
         # Add as negative
         return self + -other
+
+    def __repr__(self):
+        return self.hex
