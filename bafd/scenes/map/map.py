@@ -160,9 +160,12 @@ class Coord:
         # Set value
         self._map = value
         # Calculate screen coords
+        x, y = value
+        w, h = vsize
+        # Elimination method
         self._screen = (
-            numpy.floor(value[0]*5-value[1]*5)+vsize[0]/2-4,
-            numpy.floor(value[1]*4+value[0]*4)-vsize[1]/2-30
+            int(numpy.floor(x*5 - y*5 + w/2 - 4)),
+            int(numpy.floor(y*4 + x*4 - h/2 - 30))
         )
 
     @property
@@ -178,7 +181,22 @@ class Coord:
         # Set value
         self._screen = value
         # Calculate map coords
+        x, y = value
+        w, h = vsize
+        """
+        x = X*5 - Y*5 + (w-8)/2
+        y = Y*4 + X*4 - (h+60)/2
+
+        X = x/5 - (w-8)/10 + Y
+        Y = y/4 + (h+60)/8 - X
+
+        X - Y = x/5 - (w-8)/10
+        Y + X = y/4 + (h+60)/8
+
+        X = x/10 - (w-8)/20 + y/8 + (h+60)/16
+        Y = y/8 + (h+60)/16 - x/10 + (w-8)/20
+        """
         self._map = (
-            numpy.floor(value[0]/5),
-            numpy.floor(value[1]/4)
+            int(numpy.floor(x/10 - (w-8)/20 + y/8 + (h+60)/16)),
+            int(numpy.floor(y/8 + (h+60)/16 - x/10 + (w-8)/20))
         )
